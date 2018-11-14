@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SuperAwesome.Inherit
 {
@@ -89,6 +90,12 @@ namespace SuperAwesome.Inherit
 
             // Library
             // Backgrounding
+
+
+            Task.Run(() =>
+            {
+                // thing in the background
+            });
         }
 
         public static bool Method(ICar car)
