@@ -53,6 +53,7 @@ namespace SuperFancy.Debugging
             int result = Multiply(a, b);
 
             Console.WriteLine(result);
+            
         }
 
         static int Multiply(int a, int b)
