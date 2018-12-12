@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SuperAwesome.Api</name>
+    </assembly>
+    <members>
+        <member name="M:SuperAwesome.Api.Controllers.ProjectsController.GetProjects">
+            <summary>
+            Wat een mooie documentatie!
+            </summary>
+            <returns><see cref="T:SuperAwesome.Api.Domain.Project"/>Projects!</returns>
+        </member>
+    </members>
+</doc>
