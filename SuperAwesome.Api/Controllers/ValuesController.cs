@@ -10,10 +10,15 @@ namespace SuperAwesome.Api.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly string _bla = "";
+
+        
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            var ouhewt = _bla;
             return new string[] { "value1", "value2" };
         }
 

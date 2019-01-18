@@ -5,8 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SuperAwesome.Api.Data;
 
 namespace SuperAwesome.Api
 {
@@ -14,11 +17,43 @@ namespace SuperAwesome.Api
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var host = CreateWebHostBuilder(args).Build();
+
+            ProcessDbCommands(host);
+
+            host.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
+
+
+        private static void ProcessDbCommands(IWebHost host)
+        {
+            var services = (IServiceScopeFactory)host.Services.GetService(typeof(IServiceScopeFactory));
+
+            using (var scope = services.CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<ApiDbContext>().Database.Migrate();
+
+                scope.VerifyInitialDbSeed();
+            }
+        }
+    }
+
+    public static class DataSeeder
+    {
+        public static void VerifyInitialDbSeed(this IServiceScope scope)
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApiDbContext>();
+            var hostingEnv = scope.ServiceProvider.GetRequiredService<IHostingEnvironment>();
+
+            VerifyUsers(dbContext, hostingEnv);
+        }
+
+        private static void VerifyUsers(ApiDbContext context, IHostingEnvironment roleManager)
+        {
+        }
     }
 }

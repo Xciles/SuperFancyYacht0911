@@ -19,9 +19,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperFancy.Debugging.Deskto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperFancyReflection", "SuperFancyReflection\SuperFancyReflection.csproj", "{792C6FE5-42D1-4DCE-903B-35EE50599C77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAwesome.Web", "SuperAwesome.Web\SuperAwesome.Web.csproj", "{20F4DD78-A982-4A20-9A83-AA886EDA5370}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperAwesome.Web", "SuperAwesome.Web\SuperAwesome.Web.csproj", "{20F4DD78-A982-4A20-9A83-AA886EDA5370}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperAwesome.Api", "SuperAwesome.Api\SuperAwesome.Api.csproj", "{106560B9-9D28-4536-A3A6-56FD5B85411B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperAwesome.Api", "SuperAwesome.Api\SuperAwesome.Api.csproj", "{106560B9-9D28-4536-A3A6-56FD5B85411B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionFiles", "_SolutionFiles", "{1CB47488-CF0B-46EC-9E6B-C2F3C32CC194}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

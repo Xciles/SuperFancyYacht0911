@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,23 @@ namespace SuperAwesome.Api.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly ApiDbContext _context;
+        private static Task _initialize;
+        private string _googleResult;
 
         public ProjectsController(ApiDbContext context)
         {
             _context = context;
+
+            _initialize = RetrieveData();
+        }
+
+        private async Task RetrieveData()
+        {
+            await Task.Delay(2_000);
+            using (var client = new HttpClient())
+            {
+                _googleResult = await client.GetStringAsync("https://www.google.com");
+            }
         }
 
         // GET: api/Projects
@@ -41,7 +55,47 @@ namespace SuperAwesome.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var project = await _context.Projects.FindAsync(id);
+            await _initialize;
+
+            var enLinq = (from p in _context.Set<Project>()
+                                    .Include(x => x.Skills).ThenInclude(x => x.Project)
+                                where p.Id == 1
+                                select p).FirstOrDefaultAsync();
+
+            await enLinq;
+            
+
+            var entity = _context
+                                .Set<Project>()
+                                //.ToList()
+                                .FirstOrDefault(x => x.Id == 1);
+
+            var entity2 = await _context
+                                .Set<Project>()
+                                .Where(x => x.Id == 1 && x.Name.Equals(""))
+                                    //.All(x => x.Name.StartsWith("E"))
+                                    //.Any()
+                                    //.Count()
+                                .OrderBy(x => x.EndDate).ThenBy(x => x.Name)
+                                .FirstOrDefaultAsync();
+
+            // order by id, date
+
+
+            //var p = new Project
+            //{
+            //    Id = 1,
+            //    Name = "Test",
+            //};
+
+            //var skill = new Skill
+            //{
+            //    Name = "wyeguyweht",
+            //    ProjectId = 1
+            //};
+            //_context.Set<Skill>().Add(skill);
+
+            var project = await _context.Projects.Include(x => x.Skills).FirstOrDefaultAsync(x => x.Id.Equals(id));
 
             if (project == null)
             {
@@ -49,6 +103,20 @@ namespace SuperAwesome.Api.Controllers
             }
 
             return Ok(project);
+        }
+
+        // GET: api/Projects/5
+        [HttpGet("skills/{id}")]
+        public async Task<IActionResult> GetProjectSkills([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var skills = await _context.Set<Skill>().Where(x => x.ProjectId.Equals(id)).ToListAsync();
+
+            return Ok(skills);
         }
 
         // PUT: api/Projects/5
