@@ -17,16 +17,19 @@ namespace SuperAwesome.Api.Controllers
     {
         private readonly ApiDbContext _context;
         private static Task _initialize;
-        private string _googleResult;
+        private static string _googleResult;
 
         public ProjectsController(ApiDbContext context)
         {
             _context = context;
+        }
 
+        static ProjectsController()
+        {
             _initialize = RetrieveData();
         }
 
-        private async Task RetrieveData()
+        private static async Task RetrieveData()
         {
             await Task.Delay(2_000);
             using (var client = new HttpClient())
@@ -55,6 +58,57 @@ namespace SuperAwesome.Api.Controllers
                 return BadRequest(ModelState);
             }
 
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
+            await _initialize;
             await _initialize;
 
             var enLinq = (from p in _context.Set<Project>()
@@ -95,7 +149,14 @@ namespace SuperAwesome.Api.Controllers
             //};
             //_context.Set<Skill>().Add(skill);
 
-            var project = await _context.Projects.Include(x => x.Skills).FirstOrDefaultAsync(x => x.Id.Equals(id));
+            var project = await _context.Projects
+                //.Include(x => x.Skills).ThenInclude(x => x.Skill)
+                .FirstOrDefaultAsync(x => x.Id.Equals(id));
+
+            var skills = await _context.Set<SkillToProject>()
+                                .Where(x => x.ProjectId == project.Id)
+                                .Select(x => x.Skill)
+                                .ToListAsync();
 
             if (project == null)
             {
@@ -105,19 +166,19 @@ namespace SuperAwesome.Api.Controllers
             return Ok(project);
         }
 
-        // GET: api/Projects/5
-        [HttpGet("skills/{id}")]
-        public async Task<IActionResult> GetProjectSkills([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// GET: api/Projects/5
+        //[HttpGet("skills/{id}")]
+        //public async Task<IActionResult> GetProjectSkills([FromRoute] int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var skills = await _context.Set<Skill>().Where(x => x.ProjectId.Equals(id)).ToListAsync();
+        //    //var skills = await _context.Set<Skill>().Where(x => x.ProjectId.Equals(id)).ToListAsync();
 
-            return Ok(skills);
-        }
+        //    return Ok(skills);
+        //}
 
         // PUT: api/Projects/5
         [HttpPut("{id}")]

@@ -38,7 +38,7 @@ namespace SuperAwesome.Api.Controllers
             }
 
             var skill = await _context.Skill
-                .Include(x => x.Project)
+                //.Include(x => x.Project)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (skill == null)
