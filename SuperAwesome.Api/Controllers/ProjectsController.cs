@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SuperAwesome.Api.Business;
 using SuperAwesome.Api.Data;
 using SuperAwesome.Api.Domain;
+using Project = SuperAwesome.Api.Domain.Project;
 
 namespace SuperAwesome.Api.Controllers
 {
@@ -15,38 +17,22 @@ namespace SuperAwesome.Api.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly ApiDbContext _context;
-        private static Task _initialize;
-        private static string _googleResult;
+        private readonly IProject _project;
 
-        public ProjectsController(ApiDbContext context)
+        public ProjectsController(IProject project)
         {
-            _context = context;
-        }
-
-        static ProjectsController()
-        {
-            _initialize = RetrieveData();
-        }
-
-        private static async Task RetrieveData()
-        {
-            await Task.Delay(2_000);
-            using (var client = new HttpClient())
-            {
-                _googleResult = await client.GetStringAsync("https://www.google.com");
-            }
+            _project = project;
         }
 
         // GET: api/Projects
         /// <summary>
         /// Wat een mooie documentatie!
         /// </summary>
-        /// <returns><see cref="Project"/>Projects!</returns>
+        /// <returns><see cref="Domain.Project"/>Projects!</returns>
         [HttpGet]
         public IEnumerable<Project> GetProjects()
         {
-            return _context.Projects;
+            return _project.GetProjects();
         }
 
         // GET: api/Projects/5
@@ -58,112 +44,14 @@ namespace SuperAwesome.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-            await _initialize;
-
-            var enLinq = (from p in _context.Set<Project>()
-                                    .Include(x => x.Skills).ThenInclude(x => x.Project)
-                                where p.Id == 1
-                                select p).FirstOrDefaultAsync();
-
-            await enLinq;
-            
-
-            var entity = _context
-                                .Set<Project>()
-                                //.ToList()
-                                .FirstOrDefault(x => x.Id == 1);
-
-            var entity2 = await _context
-                                .Set<Project>()
-                                .Where(x => x.Id == 1 && x.Name.Equals(""))
-                                    //.All(x => x.Name.StartsWith("E"))
-                                    //.Any()
-                                    //.Count()
-                                .OrderBy(x => x.EndDate).ThenBy(x => x.Name)
-                                .FirstOrDefaultAsync();
-
-            // order by id, date
-
-
-            //var p = new Project
-            //{
-            //    Id = 1,
-            //    Name = "Test",
-            //};
-
-            //var skill = new Skill
-            //{
-            //    Name = "wyeguyweht",
-            //    ProjectId = 1
-            //};
-            //_context.Set<Skill>().Add(skill);
-
-            var project = await _context.Projects
-                //.Include(x => x.Skills).ThenInclude(x => x.Skill)
-                .FirstOrDefaultAsync(x => x.Id.Equals(id));
-
-            var skills = await _context.Set<SkillToProject>()
-                                .Where(x => x.ProjectId == project.Id)
-                                .Select(x => x.Skill)
-                                .ToListAsync();
-
-            if (project == null)
+            try
+            {
+                return Ok(await _project.GetById(id));
+            }
+            catch (EntityNotFoundException)
             {
                 return NotFound();
             }
-
-            return Ok(project);
         }
 
         //// GET: api/Projects/5
@@ -194,22 +82,13 @@ namespace SuperAwesome.Api.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(project).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _project.Update(id, project);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (EntityNotFoundException)
             {
-                if (!ProjectExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
@@ -224,8 +103,7 @@ namespace SuperAwesome.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Projects.Add(project);
-            await _context.SaveChangesAsync();
+            await _project.Add(project);
 
             return CreatedAtAction("GetProject", new { id = project.Id }, project);
         }
@@ -239,21 +117,16 @@ namespace SuperAwesome.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var project = await _context.Projects.FindAsync(id);
-            if (project == null)
+            try
+            {
+
+                var project = await _project.Delete(id);
+                return Ok(project);
+            }
+            catch (EntityNotFoundException)
             {
                 return NotFound();
             }
-
-            _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
-
-            return Ok(project);
-        }
-
-        private bool ProjectExists(int id)
-        {
-            return _context.Projects.Any(e => e.Id == id);
         }
     }
 }

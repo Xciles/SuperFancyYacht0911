@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using SuperAwesome.Api.Business;
 using SuperAwesome.Api.Data;
 
 namespace SuperAwesome.Api
@@ -30,6 +31,13 @@ namespace SuperAwesome.Api
         {
             services.AddDbContext<ApiDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddTransient<IProject, Project>();
+            services.AddTransient<ISkill, Skill>();
+
+            //services.AddTransient();
+            //services.AddScoped();
+            //services.AddSingleton();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
