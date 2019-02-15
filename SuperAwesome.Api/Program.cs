@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SuperAwesome.Api.Business;
 using SuperAwesome.Api.Data;
 
 namespace SuperAwesome.Api
@@ -39,21 +40,6 @@ namespace SuperAwesome.Api
 
                 scope.VerifyInitialDbSeed();
             }
-        }
-    }
-
-    public static class DataSeeder
-    {
-        public static void VerifyInitialDbSeed(this IServiceScope scope)
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApiDbContext>();
-            var hostingEnv = scope.ServiceProvider.GetRequiredService<IHostingEnvironment>();
-
-            VerifyUsers(dbContext, hostingEnv);
-        }
-
-        private static void VerifyUsers(ApiDbContext context, IHostingEnvironment roleManager)
-        {
         }
     }
 }

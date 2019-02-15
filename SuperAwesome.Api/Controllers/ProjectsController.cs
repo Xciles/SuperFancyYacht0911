@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,8 @@ namespace SuperAwesome.Api.Controllers
         /// </summary>
         /// <returns><see cref="Domain.Project"/>Projects!</returns>
         [HttpGet]
-        public IEnumerable<Project> GetProjects()
+        [Authorize]
+        public virtual Task<List<Project>> GetProjects()
         {
             return _project.GetProjects();
         }
@@ -53,20 +55,6 @@ namespace SuperAwesome.Api.Controllers
                 return NotFound();
             }
         }
-
-        //// GET: api/Projects/5
-        //[HttpGet("skills/{id}")]
-        //public async Task<IActionResult> GetProjectSkills([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    //var skills = await _context.Set<Skill>().Where(x => x.ProjectId.Equals(id)).ToListAsync();
-
-        //    return Ok(skills);
-        //}
 
         // PUT: api/Projects/5
         [HttpPut("{id}")]
