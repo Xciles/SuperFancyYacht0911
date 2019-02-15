@@ -1,14 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.Query.ExpressionTranslators.Internal;
 
 namespace SuperAwesome.Api.Business
 {
-    public interface IProject
+    public interface IProject : IBaseEntity<Domain.Project, int>
     {
-        Task<List<Domain.Project>> GetProjects();
-        Task<Domain.Project> GetById(int id);
-        Task Update(int id, Domain.Project project);
-        Task Add(Domain.Project project);
-        Task<Domain.Project> Delete(int id);
     }
 }

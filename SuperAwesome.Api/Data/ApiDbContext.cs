@@ -9,6 +9,7 @@ namespace SuperAwesome.Api.Data
     public class ApiDbContext : DbContext
     {
         public DbSet<Domain.Project> Projects { get; set; }
+        public DbSet<Domain.Car> Cars { get; set; }
 
         public ApiDbContext(DbContextOptions<ApiDbContext> options)
             : base(options)

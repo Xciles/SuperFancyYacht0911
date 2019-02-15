@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,7 @@ namespace SuperAwesome.Api
 
             services.AddTransient<IProject, Project>();
             services.AddTransient<ISkill, Skill>();
+            services.AddTransient<ICar, Car>();
 
             //services.AddTransient();
             //services.AddScoped();
@@ -41,7 +43,11 @@ namespace SuperAwesome.Api
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(options => { options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; });
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    //options.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.All;
+                });
 
             services.AddSwaggerDocument();
         }

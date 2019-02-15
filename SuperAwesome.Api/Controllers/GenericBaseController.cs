@@ -1,41 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SuperAwesome.Api.Business;
-using SuperAwesome.Api.Data;
-using Skill = SuperAwesome.Api.Domain.Skill;
+using SuperAwesome.Api.Domain;
 
 namespace SuperAwesome.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SkillsController : ControllerBase
+    public abstract class GenericBaseController<T, TId> : ControllerBase 
+        where T : BaseDomain<TId>
     {
-        private readonly ISkill _skill;
+        protected IBaseEntity<T, TId> Entity { get; set; }
 
-        public SkillsController(ISkill skill)
+        protected GenericBaseController(IBaseEntity<T, TId> entity)
         {
-            _skill = skill;
+            Entity = entity;
         }
 
-        // GET: api/Skills
+        // GET: api/Projects
         /// <summary>
         /// Wat een mooie documentatie!
         /// </summary>
-        /// <returns><see cref="Domain.Skill"/>Skills!</returns>
+        /// <returns><see cref="T"/>Projects!</returns>
         [HttpGet]
-        public virtual Task<List<Skill>> GetSkills()
+        public virtual Task<List<T>> GetAll()
         {
-            return _skill.GetAll();
+            return Entity.GetAll();
         }
 
-        // GET: api/Skills/5
+        // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSkill([FromRoute] int id)
+        public virtual async Task<IActionResult> Get([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
@@ -44,7 +40,7 @@ namespace SuperAwesome.Api.Controllers
 
             try
             {
-                return Ok(await _skill.GetById(id));
+                return Ok(await Entity.GetById(id));
             }
             catch (EntityNotFoundException)
             {
@@ -52,23 +48,23 @@ namespace SuperAwesome.Api.Controllers
             }
         }
 
-        // PUT: api/Skills/5
+        // PUT: api/Projects/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSkill([FromRoute] int id, [FromBody] Skill skill)
+        public virtual async Task<IActionResult> Put([FromRoute] int id, [FromBody] T model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != skill.Id)
+            if (!id.Equals(model.Id))
             {
                 return BadRequest();
             }
 
             try
             {
-                await _skill.Update(id, skill);
+                await Entity.Update(id, model);
             }
             catch (EntityNotFoundException)
             {
@@ -78,23 +74,23 @@ namespace SuperAwesome.Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Skills
+        // POST: api/Projects
         [HttpPost]
-        public async Task<IActionResult> PostSkill([FromBody] Skill skill)
+        public virtual async Task<IActionResult> PostProject([FromBody] T model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _skill.Add(skill);
+            await Entity.Add(model);
 
-            return CreatedAtAction("GetSkill", new { id = skill.Id }, skill);
+            return CreatedAtAction("Get", new { id = model.Id }, model);
         }
 
-        // DELETE: api/Skills/5
+        // DELETE: api/Projects/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSkill([FromRoute] int id)
+        public virtual async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
@@ -104,8 +100,8 @@ namespace SuperAwesome.Api.Controllers
             try
             {
 
-                var skill = await _skill.Delete(id);
-                return Ok(skill);
+                var project = await Entity.Delete(id);
+                return Ok(project);
             }
             catch (EntityNotFoundException)
             {

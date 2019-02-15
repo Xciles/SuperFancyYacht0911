@@ -2,10 +2,8 @@
 
 namespace SuperAwesome.Api.Domain
 {
-    public class SkillToProject
+    public class SkillToProject : BaseDomain<int>
     {
-        [Key]
-        public int Id { get; set; }
         public Skill Skill { get; set; }
         public int SkillId { get; set; }
         public Project Project { get; set; }

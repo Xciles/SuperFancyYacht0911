@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SuperAwesome.Api.Domain
 {
-    public class Skill
+    public class Skill : BaseDomain<int>
     {
-        [Key]
-        public int Id { get; set; }
-
         public string Name { get; set; }
         public string Description { get; set; }
 
