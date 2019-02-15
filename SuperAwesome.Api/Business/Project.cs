@@ -25,6 +25,10 @@ namespace SuperAwesome.Api.Business
 
             query = query.OrderBy(x => x.Description);
 
+            //query.Include(x => x.Skills).ThenInclude(x => x.Skill).ThenInclude(x => x.Projects)
+            //    .Include(x => x.Users).ThenInclude(x => x.Projects);
+
+
             return query;
         }
 
