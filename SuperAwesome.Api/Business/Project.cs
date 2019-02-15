@@ -34,10 +34,20 @@ namespace SuperAwesome.Api.Business
 
         protected override async Task<Domain.Project> GetByIdQuery(int id)
         {
-            return await Context.Set<Domain.Project>()
-                                        .Include(x => x.Skills).ThenInclude(x => x.Skill)
-                                    .Where(x => x.CreatedDate > DateTime.MaxValue)
-                                    .FirstOrDefaultAsync(x => x.Id.Equals(id));
+            var b = await (from p in Context.Set<Domain.Project>()
+                                .Include(x => x.Skills).ThenInclude(x => x.Skill)
+                           where p.CreatedDate > DateTime.MaxValue && p.Id.Equals(id)
+                           orderby p.Description
+                           select p).FirstOrDefaultAsync();
+            
+
+            var a = await Context.Set<Domain.Project>()
+                                    .Include(x => x.Skills).ThenInclude(x => x.Skill)
+                                .Where(x => x.CreatedDate > DateTime.MaxValue)
+                                .OrderBy(x => x.Description)
+                                .FirstOrDefaultAsync(x => x.Id.Equals(id));
+
+            return a;
         }
     }
 }
