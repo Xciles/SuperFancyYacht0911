@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using SuperAwesome.Api.Business;
 
 namespace SuperAwesome.Api.Controllers
 {
     public class ProjectsController : GenericBaseController<Domain.Project, int>
     {
-        public ProjectsController(IProject project) : base(project)
+        public ProjectsController(IProject project, IMemoryCache cache) : base(project, cache)
         {
         }
 

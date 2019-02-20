@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using SuperAwesome.Api.Business;
 using SuperAwesome.Api.Domain;
 
@@ -11,10 +13,14 @@ namespace SuperAwesome.Api.Controllers
     public abstract class GenericBaseController<T, TId> : ControllerBase 
         where T : BaseDomain<TId>
     {
+        private readonly IMemoryCache _cache;
         protected IBaseEntity<T, TId> Entity { get; set; }
 
-        protected GenericBaseController(IBaseEntity<T, TId> entity)
+        protected static List<T> InMemoryCache { get; set; }
+
+        protected GenericBaseController(IBaseEntity<T, TId> entity, IMemoryCache cache)
         {
+            _cache = cache;
             Entity = entity;
         }
 
@@ -24,9 +30,32 @@ namespace SuperAwesome.Api.Controllers
         /// </summary>
         /// <returns><see cref="T"/>Projects!</returns>
         [HttpGet]
-        public virtual Task<List<T>> GetAll()
+        public virtual async Task<List<T>> GetAll()
         {
-            return Entity.GetAll();
+            // Look for cache key.
+            object cacheEntry;
+            if (!_cache.TryGetValue("GetAll", out cacheEntry))
+            {
+                // Key not in cache, so get data.
+                cacheEntry = await Entity.GetAll();
+
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    // Keep in cache for this time, reset time if accessed.
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(3));
+
+                // Save data in cache.
+                _cache.Set("GetAll", cacheEntry, cacheEntryOptions);
+            }
+
+            return (List<T>)cacheEntry;
+
+            //if (InMemoryCache == null)
+            //{
+            //    InMemoryCache = await Entity.GetAll();
+            //}
+
+            //return InMemoryCache;
         }
 
         // GET: api/Projects/5

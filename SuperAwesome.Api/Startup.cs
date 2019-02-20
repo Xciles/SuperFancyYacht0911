@@ -42,6 +42,8 @@ namespace SuperAwesome.Api
             //services.AddScoped();
             //services.AddSingleton();
 
+            services.AddMemoryCache();
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(options =>
