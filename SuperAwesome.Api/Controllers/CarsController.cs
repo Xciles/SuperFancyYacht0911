@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Caching.Memory;
 using SuperAwesome.Api.Business;
 
@@ -7,7 +10,7 @@ namespace SuperAwesome.Api.Controllers
 {
     public class CarsController : GenericBaseController<Domain.Car, int>
     {
-        public new ICar Entity => ((ICar) base.Entity);
+        public new ICar Entity => ((ICar)base.Entity);
 
         public CarsController(ICar car, IMemoryCache cache) : base(car, cache)
         {

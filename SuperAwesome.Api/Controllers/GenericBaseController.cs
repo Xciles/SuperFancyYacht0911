@@ -30,32 +30,34 @@ namespace SuperAwesome.Api.Controllers
         /// </summary>
         /// <returns><see cref="T"/>Projects!</returns>
         [HttpGet]
-        public virtual async Task<List<T>> GetAll()
+        public virtual Task<List<T>> GetAll()
         {
-            // Look for cache key.
-            object cacheEntry;
-            if (!_cache.TryGetValue("GetAll", out cacheEntry))
-            {
-                // Key not in cache, so get data.
-                cacheEntry = await Entity.GetAll();
+            return Entity.GetAll();
 
-                // Set cache options.
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    // Keep in cache for this time, reset time if accessed.
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(3));
-
-                // Save data in cache.
-                _cache.Set("GetAll", cacheEntry, cacheEntryOptions);
-            }
-
-            return (List<T>)cacheEntry;
-
-            //if (InMemoryCache == null)
+            //// Look for cache key.
+            //object cacheEntry;
+            //if (!_cache.TryGetValue("GetAll", out cacheEntry))
             //{
-            //    InMemoryCache = await Entity.GetAll();
+            //    // Key not in cache, so get data.
+            //    cacheEntry = await Entity.GetAll();
+
+            //    // Set cache options.
+            //    var cacheEntryOptions = new MemoryCacheEntryOptions()
+            //        // Keep in cache for this time, reset time if accessed.
+            //        .SetSlidingExpiration(TimeSpan.FromSeconds(3));
+
+            //    // Save data in cache.
+            //    _cache.Set("GetAll", cacheEntry, cacheEntryOptions);
             //}
 
-            //return InMemoryCache;
+            //return (List<T>)cacheEntry;
+
+            ////if (InMemoryCache == null)
+            ////{
+            ////    InMemoryCache = await Entity.GetAll();
+            ////}
+
+            ////return InMemoryCache;
         }
 
         // GET: api/Projects/5
